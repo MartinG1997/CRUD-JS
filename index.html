@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Guardar y Cargar datos en LocalStorage</title>
+</head>
+<body>
+  <h1>Guardar y Cargar datos en LocalStorage</h1>
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre">
+  <label for="apellido">Apellido:</label>
+  <input type="text" id="apellido">
+  <input hidden id="Id" value="">
+  <button onclick="SaveData()">Guardar</button>
+  <button onclick="LoadData()">Cargar</button>
+  <button onclick="UpdateData()">Actualizar</button>
+  <table id="tablaDatos">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Acciones</th>
+        <th>Acciones</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script src="js/storage.js"></script>
+</body>
+</html>
