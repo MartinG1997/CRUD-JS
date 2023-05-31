@@ -1,15 +1,36 @@
+$(document).ready(function() 
+{
+    $.getJSON("https://api.gael.cloud/general/public/previred/072022", function(data) 
+    {
+        var indicadores = ["AFPCapitalTasaDep","AFPCuprumTasaDep", "AFPHabitatTasaDep", "AFPPlanVitalTasaDep", "AFPProVidaTasaDep", "AFPModeloTasaDep", "AFPUnoTasaDep"];
+        $.each(data, function(key, value) 
+        {
+            if (indicadores.includes(key)) 
+            {
+                $("#indicadores").append("<option value='" + value + "'>" + key + "</option>");
+            }
+        });
+    });
+});
+
 function SaveData() 
 {
     var nombre = document.getElementById('nombre').value;
     var apellido = document.getElementById('apellido').value;
-  
+    var monto = document.getElementById('monto').value;
+    const selectList = document.getElementById("indicadores");
+    var afp = selectList.options[selectList.selectedIndex].textContent;
+    var porcentajeafp = parseFloat(document.getElementById("indicadores").value.replace(',', '.'));
+    var montoReal = ((monto*100)/(100-7-porcentajeafp)).toFixed(2);
+    var montoAFP = ((montoReal*porcentajeafp)/100).toFixed(2);
+    var montoFONASA = (montoReal*0.07).toFixed(2);
+
     if (nombre && apellido) 
     {
       // Obtener los datos existentes en LocalStorage
       var datosGuardados = JSON.parse(localStorage.getItem('datos')) || [];
-  
       // Agregar el nuevo dato al array
-      datosGuardados.push({ nombre: nombre, apellido: apellido });
+      datosGuardados.push({ nombre: nombre, apellido: apellido, monto: monto, afp: afp, porcentajeafp: porcentajeafp, montoReal: montoReal, montoAFP: montoAFP, montoFONASA: montoFONASA});
   
       // Guardar el array actualizado en LocalStorage
       localStorage.setItem('datos', JSON.stringify(datosGuardados));
@@ -17,6 +38,8 @@ function SaveData()
       // Limpiar los campos de entrada
       document.getElementById('nombre').value = '';
       document.getElementById('apellido').value = '';
+      document.getElementById('monto').value = '';
+      document.getElementById('indicadores').value = '';
   
       // Actualizar la tabla
       LoadData();
@@ -36,12 +59,25 @@ function LoadData()
         var fila = document.createElement('tr');
         var celdaNombre = document.createElement('td');
         var celdaApellido = document.createElement('td');
+        var celdaLiquido = document.createElement('td');
+        var celdaAFP = document.createElement('td');
+        var celdaPorcentajeAfp = document.createElement('td');
+        var celdaMonto = document.createElement('td');
+        var celdaMontoAfp = document.createElement('td');
+        var celdaMontoFonasa = document.createElement('td');
         var celdaEditar = document.createElement('td');
         var botonEditar = document.createElement('button');
         var btnDelete = document.createElement('button');
+        //img.setattribute('src', ...);
 
         celdaNombre.textContent = dato.nombre;
         celdaApellido.textContent = dato.apellido;
+        celdaLiquido.textContent = dato.monto;
+        celdaAFP.textContent = dato.afp;
+        celdaPorcentajeAfp.textContent = dato.porcentajeafp;
+        celdaMonto.textContent = dato.montoReal;
+        celdaMontoAfp.textContent = dato.montoAFP;
+        celdaMontoFonasa.textContent = dato.montoFONASA;
     
         botonEditar.textContent = 'Editar';
         botonEditar.addEventListener('click', function () 
@@ -57,9 +93,15 @@ function LoadData()
   
         celdaEditar.appendChild(botonEditar);
         celdaEditar.appendChild(btnDelete);
-  
+        
         fila.appendChild(celdaNombre);
         fila.appendChild(celdaApellido);
+        fila.appendChild(celdaLiquido);
+        fila.appendChild(celdaAFP);
+        fila.appendChild(celdaPorcentajeAfp);
+        fila.appendChild(celdaMonto);
+        fila.appendChild(celdaMontoAfp);
+        fila.appendChild(celdaMontoFonasa);
         fila.appendChild(celdaEditar);
   
         tbody.appendChild(fila);
@@ -96,6 +138,12 @@ function UpdateData()
     localStorage.setItem('datos', JSON.stringify(datosGuardados));
     document.getElementById('nombre').value = '';
     document.getElementById('apellido').value = '';
+    LoadData();
+}
+
+function Clean()
+{
+    localStorage.clear();
     LoadData();
 }
   

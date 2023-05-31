@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Guardar y Cargar datos en LocalStorage</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <h1>Guardar y Cargar datos en LocalStorage</h1>
@@ -9,17 +10,29 @@
   <input type="text" id="nombre">
   <label for="apellido">Apellido:</label>
   <input type="text" id="apellido">
+  <label for="monto">Liquido</label>
+  <input type="number" id="monto">
+  <select id="indicadores">
+    <option value="">Selecciona un indicador</option>
+  </select>
   <input hidden id="Id" value="">
   <button onclick="SaveData()">Guardar</button>
   <button onclick="LoadData()">Cargar</button>
   <button onclick="UpdateData()">Actualizar</button>
+  <button onclick="Clean()">Limpiar</button>
   <table id="tablaDatos">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>Apellido</th>
+        <th>Liquido</th>
+        <th>AFP</th>
+        <th>Porcentaje</th>
+        <th>Bruto</th>
+        <th>Monto AFP</th>
+        <th>Monto Fonasa</th>
         <th>Acciones</th>
-        <th>Acciones</th>
+        
         
       </tr>
     </thead>
