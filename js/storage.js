@@ -20,12 +20,12 @@ function SaveData()
     var monto = document.getElementById('monto').value;
     const selectList = document.getElementById("indicadores");
     var afp = selectList.options[selectList.selectedIndex].textContent;
-    var porcentajeafp = parseFloat(document.getElementById("indicadores").value.replace(',', '.'));
+    var porcentajeafp = parseFloat(selectList.value.replace(',', '.'));
     var montoReal = ((monto*100)/(100-7-porcentajeafp)).toFixed(2);
     var montoAFP = ((montoReal*porcentajeafp)/100).toFixed(2);
     var montoFONASA = (montoReal*0.07).toFixed(2);
 
-    if (nombre && apellido) 
+    if (nombre && apellido && monto && selectList) 
     {
       // Obtener los datos existentes en LocalStorage
       var datosGuardados = JSON.parse(localStorage.getItem('datos')) || [];
@@ -43,6 +43,10 @@ function SaveData()
   
       // Actualizar la tabla
       LoadData();
+    }
+    else
+    {
+        alert('Falta asignar valor a uno de los siguientes campos: \n 1. Nombre \n 2. Apellido \n 3. Monto \n 4. Lista de AFPs');
     }
 }
   
@@ -116,6 +120,7 @@ function EditData(index)
     if (dato) {
       document.getElementById('nombre').value = dato.nombre;
       document.getElementById('apellido').value = dato.apellido;
+      document.getElementById('monto').value = dato.monto;
     }
     document.getElementById('Id').value = index;
 }
@@ -130,15 +135,33 @@ function DeleteData(index)
 
 function UpdateData()
 {
-    index = document.getElementById('Id').value;
-    var datosGuardados = JSON.parse(localStorage.getItem('datos')) || [];
-    var nombre = document.getElementById('nombre').value;
-    var apellido = document.getElementById('apellido').value;
-    datosGuardados[index]={ nombre: nombre, apellido: apellido }
-    localStorage.setItem('datos', JSON.stringify(datosGuardados));
-    document.getElementById('nombre').value = '';
-    document.getElementById('apellido').value = '';
-    LoadData();
+    const selectList = document.getElementById("indicadores");
+    if(selectList.value != '')
+    {
+        index = document.getElementById('Id').value;
+        var datosGuardados = JSON.parse(localStorage.getItem('datos')) || [];
+        var nombre = document.getElementById('nombre').value;
+        var apellido = document.getElementById('apellido').value;
+        var monto = document.getElementById('monto').value;
+        var afp = selectList.options[selectList.selectedIndex].textContent;
+        var porcentajeafp = parseFloat(selectList.value.replace(',', '.'));
+        var montoReal = ((monto*100)/(100-7-porcentajeafp)).toFixed(2);
+        var montoAFP = ((montoReal*porcentajeafp)/100).toFixed(2);
+        var montoFONASA = (montoReal*0.07).toFixed(2);
+
+        datosGuardados[index]={ nombre: nombre, apellido: apellido, monto: monto, afp: afp, porcentajeafp: porcentajeafp, montoReal: montoReal, montoAFP: montoAFP, montoFONASA: montoFONASA};
+        localStorage.setItem('datos', JSON.stringify(datosGuardados));
+        document.getElementById('nombre').value = '';
+        document.getElementById('apellido').value = '';
+        document.getElementById('monto').value = '';
+        document.getElementById('indicadores').value = '';
+
+        LoadData();
+    }
+    else
+    {
+        alert('Falta asignar valor a uno de los siguientes campos: \n 1. Nombre \n 2. Apellido \n 3. Monto \n 4. Lista de AFPs');
+    }
 }
 
 function Clean()
@@ -146,4 +169,41 @@ function Clean()
     localStorage.clear();
     LoadData();
 }
+
+function descargarExcel() {
+    var datosGuardados = JSON.parse(localStorage.getItem('datos')) || [];
+  
+    if (datosGuardados.length === 0) {
+      alert("No hay datos guardados para descargar.");
+      return;
+    }
+  
+    var datos = [['Nombre', 'Apellido', 'Sueldo Bruto', 'AFP', 'Porcentaje AFP', 'Sueldo Liquido', 'Monto AFP', 'Monto FONASA']].concat(datosGuardados.map(function(dato) {
+      return [dato.nombre, dato.apellido, dato.monto, dato.afp, dato.porcentajeafp, dato.montoReal, dato.montoAFP, dato.montoFONASA];
+    }));
+  
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
+  
+    var libroBinario = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+  
+    function s2ab(s) {
+      var buf = new ArrayBuffer(s.length);
+      var view = new Uint8Array(buf);
+      for (var i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF;
+      }
+      return buf;
+    }
+  
+    var archivoExcel = new Blob([s2ab(libroBinario)], { type: "application/octet-stream" });
+  
+    var enlaceDescarga = document.createElement("a");
+    enlaceDescarga.href = URL.createObjectURL(archivoExcel);
+    enlaceDescarga.download = "datos.xlsx";
+    enlaceDescarga.click();
+  }
+  
+  
   
