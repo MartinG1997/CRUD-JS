@@ -6,7 +6,7 @@
 ## Índice
 
 * [1. Introducción](#Introducción)
-* [2. Demo](#Demostración)
+* [2. Demo](#Demo)
 * [3. ¿Qué es?](#¿Qué-es?)
 * [4. Objetivos de aprendizaje](#Objetivos-de-aprendizaje)
 * [5. Requisitos](#Requisitos)
@@ -34,7 +34,7 @@ En ella se tienen los siguientes puntos:
 
 ## ¿Qué es?
 
-Como se mencionó , lo que busca esta aplicación es calcular a raíz del sueldo líquido el bruto. Para ello hay que tener ciertas nociones.
+Como se mencionó, lo que busca esta aplicación es calcular a raíz del sueldo líquido el bruto. Para ello hay que tener ciertas nociones.
 
 - Lo primero que hay que tener en consideración es que este proyecto está pensando para los sueldos de Chile.
 - Posterior a ello, en Chile existen los siguientes descuentos legales: Seguro de cesantía, FONASA (Salud), AFPs (Sistema de ahorro para pensión.)
