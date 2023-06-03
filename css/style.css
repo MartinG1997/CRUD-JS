@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Meriweather', serif;
+}
+
+.bg-deepblue {
+    background: #0c1148;
+}
+
+header {
+    width: 100%;
+    overflow: hidden;
+}
+
+.navbar {
+    width: 85%;
+    margin: 0 auto;
+    padding: 10px 0px 10px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 1rem;
+}
+
+section {
+    width: 85%;
+    margin: 0 auto;
+}
+
+form {
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 30px;
+    font-size: 1.3rem;
+}
+
+form div {
+    margin: 20px 0px 20px 0px;
+    display: flex;
+    flex-direction: row;
+}
+
+input {
+    border: 2px solid black;
+    border-radius: 10px;
+    height: 50px;
+}
+
+label {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+select {
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+button {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid black;
+    font-size: 1.3rem;
+}
+
+th,td {
+    padding: 10px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 auto;
+    font-size: 1.4rem;
+}
+
+thead {
+    background-color: #333;
+    color: white;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 2%;
+    font-size: 1.4rem;
+}
+
+tbody tr:nth-child(odd){
+    background-color: #fff;
+}
+
+tbody tr:nth-child(even){
+    background-color: #eee;
+}
+
+.oculto {
+    display: none;
+}
+
+@media (max-width: 540px) {
+    .navbar div img {
+        display: none;
+    }
+    .navbar {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 414px) {
+    form div {
+        display: grid;
+        flex-direction: column;
+    }
+}
