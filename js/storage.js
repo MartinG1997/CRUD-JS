@@ -1,3 +1,4 @@
+// Función para traer la API de gael.cloud, la cual cotiene los datos de previred actualizados y se trae en forma de JSON.
 $(document).ready(function () {
     $.getJSON(
         "https://api.gael.cloud/general/public/previred/072022",
@@ -11,6 +12,7 @@ $(document).ready(function () {
                 "AFPModeloTasaDep",
                 "AFPUnoTasaDep",
             ];
+            //Recorre data para para armar un select list con value y key
             $.each(data, function (key, value) {
                 if (indicadores.includes(key)) {
                     $("#indicadores").append(
@@ -23,6 +25,7 @@ $(document).ready(function () {
 });
 
 function SaveData() {
+    var id = document.getElementById("Id").value;
     var nombre = document.getElementById("nombre").value;
     var apellido = document.getElementById("apellido").value;
     var monto = document.getElementById("monto").value;
@@ -33,6 +36,41 @@ function SaveData() {
     var montoAFP = ((montoReal * porcentajeafp) / 100).toFixed(2);
     var montoFONASA = (montoReal * 0.07).toFixed(2);
     var montoSeguro = (montoReal*0.006).toFixed(2);
+    var sueldobase = document.getElementById("base").value;
+    var diastrabajados = document.getElementById("dias").value;
+    var monto1 = (sueldobase/30)*diastrabajados;
+    var agregar = (monto-monto1);
+
+    //Se simplifica codigo, en vez de crear un Update igual al SaveData, se decide eliminar, dado que de la l28 a la 42 eran exactamente iguales
+    //Es mejor evaluar si esta o no el Id
+    if(id >= 0 && id !="" && selectList.value != "")
+    {
+        var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
+        datosGuardados[id] = {
+            nombre: nombre,
+            apellido: apellido,
+            monto: monto,
+            afp: afp,
+            porcentajeafp: porcentajeafp,
+            montoReal: montoReal,
+            montoAFP: montoAFP,
+            montoFONASA: montoFONASA,
+            montoSeguro: montoSeguro,
+            sueldobase: sueldobase,
+            diastrabajados: diastrabajados,
+            monto1: monto1,
+            agregar: agregar
+        };
+        localStorage.setItem("datos", JSON.stringify(datosGuardados));
+        document.getElementById("nombre").value = "";
+        document.getElementById("apellido").value = "";
+        document.getElementById("monto").value = "";
+        document.getElementById("indicadores").value = "";
+        document.getElementById("Id").value = "";
+
+        LoadData();
+        return 0;
+    }
 
     if (nombre != "" && apellido != "" && monto != "" && selectList.value != "") {
         // Obtener los datos existentes en LocalStorage
@@ -47,7 +85,11 @@ function SaveData() {
             montoReal: montoReal,
             montoAFP: montoAFP,
             montoFONASA: montoFONASA,
-            montoSeguro: montoSeguro
+            montoSeguro: montoSeguro,
+            sueldobase: sueldobase,
+            diastrabajados: diastrabajados,
+            monto1: monto1,
+            agregar: agregar
         });
 
         // Guardar el array actualizado en LocalStorage
@@ -77,57 +119,31 @@ function LoadData() {
 
     datosGuardados.forEach(function (dato, index) {
         var fila = document.createElement("tr");
-        var celdaNombre = document.createElement("td");
-        var celdaApellido = document.createElement("td");
-        var celdaLiquido = document.createElement("td");
-        var celdaAFP = document.createElement("td");
-        var celdaPorcentajeAfp = document.createElement("td");
-        var celdaMonto = document.createElement("td");
-        var celdaMontoAfp = document.createElement("td");
-        var celdaMontoFonasa = document.createElement("td");
-        var celdaMontoSeguro = document.createElement("td");
-        var celdaEditar = document.createElement("td");
-        var botonEditar = document.createElement("button");
-        var btnDelete = document.createElement("button");
-        //img.setattribute('src', ...);
 
-        celdaNombre.textContent = dato.nombre;
-        celdaApellido.textContent = dato.apellido;
-        celdaLiquido.textContent = dato.monto;
-        celdaAFP.textContent = dato.afp;
-        celdaPorcentajeAfp.textContent = dato.porcentajeafp;
-        celdaMonto.textContent = dato.montoReal;
-        celdaMontoAfp.textContent = dato.montoAFP;
-        celdaMontoFonasa.textContent = dato.montoFONASA;
-        celdaMontoSeguro.textContent = dato.montoSeguro;
-
-        botonEditar.textContent = "Editar";
-        botonEditar.addEventListener("click", function () {
-            EditData(index); // Pasamos el índice del dato a editar
-        });
-
-        btnDelete.textContent = "Eliminar";
-        btnDelete.addEventListener("click", function () {
-            DeleteData(index); // Pasamos el índice del dato a editar
-        });
-
-        celdaEditar.appendChild(botonEditar);
-        celdaEditar.appendChild(btnDelete);
-
-        fila.appendChild(celdaNombre);
-        fila.appendChild(celdaApellido);
-        fila.appendChild(celdaLiquido);
-        fila.appendChild(celdaAFP);
-        fila.appendChild(celdaPorcentajeAfp);
-        fila.appendChild(celdaMonto);
-        fila.appendChild(celdaMontoAfp);
-        fila.appendChild(celdaMontoFonasa);
-        fila.appendChild(celdaMontoSeguro)
-        fila.appendChild(celdaEditar);
+        fila.innerHTML = `
+            <td>${dato.nombre}</td>
+            <td>${dato.apellido}</td>
+            <td>${dato.sueldobase}</td>
+            <td>${dato.diastrabajados}</td>
+            <td>${dato.monto1}</td>
+            <td>${dato.agregar}</td>
+            <td>${dato.monto}</td>
+            <td>${dato.afp}</td>
+            <td>${dato.porcentajeafp}</td>
+            <td>${dato.montoReal}</td>
+            <td>${dato.montoAFP}</td>
+            <td>${dato.montoFONASA}</td>
+            <td>${dato.montoSeguro}</td>
+            <td>
+                <button onclick="EditData(${index})">Editar</button>
+                <button onclick="DeleteData(${index})">Eliminar</button>
+            </td>
+        `;
 
         tbody.appendChild(fila);
     });
 }
+
 
 function EditData(index) {
     var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
@@ -146,48 +162,6 @@ function DeleteData(index) {
     datosGuardados.splice(index, 1);
     localStorage.setItem("datos", JSON.stringify(datosGuardados));
     LoadData();
-}
-
-function UpdateData() {
-    const selectList = document.getElementById("indicadores");
-    if (selectList.value != "") {
-        index = document.getElementById("Id").value;
-        var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
-        var nombre = document.getElementById("nombre").value;
-        var apellido = document.getElementById("apellido").value;
-        var monto = document.getElementById("monto").value;
-        var afp = selectList.options[selectList.selectedIndex].textContent;
-        var porcentajeafp = parseFloat(selectList.value.replace(",", "."));
-        var montoReal = ((monto * 100) / (100 - 7 - porcentajeafp - 0.6)).toFixed(2);
-        var montoAFP = ((montoReal * porcentajeafp) / 100).toFixed(2);
-        var montoFONASA = (montoReal * 0.07).toFixed(2);
-        var montoSeguro = (montoReal * 0.006).toFixed(2);
-
-        datosGuardados[index] = {
-            nombre: nombre,
-            apellido: apellido,
-            monto: monto,
-            afp: afp,
-            porcentajeafp: porcentajeafp,
-            montoReal: montoReal,
-            montoAFP: montoAFP,
-            montoFONASA: montoFONASA,
-            montoSeguro: montoSeguro
-        };
-        localStorage.setItem("datos", JSON.stringify(datosGuardados));
-        document.getElementById("nombre").value = "";
-        document.getElementById("apellido").value = "";
-        document.getElementById("monto").value = "";
-        document.getElementById("indicadores").value = "";
-
-        LoadData();
-    } 
-    else 
-    {
-        alert(
-            "Falta asignar valor a uno de los siguientes campos: \n 1. Nombre \n 2. Apellido \n 3. Monto \n 4. Lista de AFPs"
-        );
-    }
 }
 
 function Clean() {
@@ -214,6 +188,7 @@ function descargarExcel() {
             "Monto AFP",
             "Monto FONASA",
             "Seguro de Cesantía",
+            "Sueldo Base"
         ],
     ].concat(
         datosGuardados.map(function (dato) {
@@ -227,6 +202,7 @@ function descargarExcel() {
                 dato.montoAFP,
                 dato.montoFONASA,
                 dato.montoSeguro,
+                dato.sueldobase,
             ];
         })
     );
