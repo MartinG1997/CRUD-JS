@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE-Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guardar y Cargar datos en LocalStorage</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/normalize.css" />
@@ -13,56 +13,69 @@
     <header class="bg-deepblue">
       <nav class="navbar">
         <div>
-          <img src="img/bx-money-withdraw.svg" alt="">
+          <img src="img/bx-money-withdraw.svg" alt="" />
         </div>
         <div>
           <h1>Calculadora de sueldos brutos</h1>
         </div>
       </nav>
     </header>
-    <section>
+    <section class="container">
       <form>
         <input hidden id="Id" value="" />
-        <div>
-          <div>
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" />
+        <div class="form-row">
+          <div class="input-data">
+            <input type="text" id="nombre" required>
+            <div class="underline"></div>
+            <label for="nombre">Nombre</label>
           </div>
-          <div>
-            <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" />
-          </div>
-        </div>
-        <div>
-          <div>
-            <label for="dias">Dias:</label>
-            <input type="number" id="dias" />
+          <div class="input-data">
+            <input type="text" id="apellido" required>
+            <div class="underline"></div>
+            <label for="apellido">Apellido</label>
           </div>
         </div>
-        <div>
-          <div>
-            <label for="monto">Liquido:</label>
-            <input type="number" id="monto" />
+        <div class="form-row">
+          <div class="input-data">
+            <input type="number" id="dias" required>
+            <div class="underline"></div>
+            <label for="dias">Días Trabajados</label>
           </div>
-          <div>
-            <label for="base">Base:</label>
-            <input type="number" id="base" />
+          <div class="input-data">
+            <input type="text" id="base" required>
+            <div class="underline"></div>
+            <label for="base">Sueldo Base</label>
           </div>
-          <div>
-            <label>AFP:</label>
-            <select id="indicadores">
-              <option value="">Selecciona un indicador</option>
+        </div>
+        <div class="form-row">
+          <div class="input-data">
+            <input type="number" id="monto" required>
+            <div class="underline"></div>
+            <label for="monto">Monto</label>
+          </div>
+          <div class="input-data">
+            <select id="indicadores" required>
+              <option value="">Selecione una AFP</option>
             </select>
           </div>
         </div>
-        <div>
-          <button type="button" onclick="SaveData()">Guardar</button>
-          <button type="button" onclick="LoadData()">Cargar</button>
-        </div>
-        <div>
-          <button type="button" onclick="UpdateData()">Actualizar</button>
-          <button onclick="Clean()">Limpiar</button>
-          <button type="button" onclick="descargarExcel()">Excel</button>
+        <div class="form-row submit-btn">
+          <div class="input-data">
+            <div class="inner"></div>
+            <input type="submit" onclick="SaveData()" value="Guardar">
+          </div>
+          <div class="input-data">
+            <div class="inner"></div>
+            <input type="button" onclick="LoadData()" value="Cargar">
+          </div>
+          <div class="input-data">
+            <div class="inner"></div>
+            <input type="button" onclick="Clean()" value="Enviar">
+          </div>
+          <div class="input-data">
+            <div class="inner"></div>
+            <input type="button" onclick="descargarExcel()" value="Excel">
+          </div>
         </div>
       </form>
     </section>
