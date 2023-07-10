@@ -186,7 +186,22 @@ tbody tr:nth-child(even){
 }
 
 .oculto {
-    display: none;
+    display: none;z
+}
+
+@media (max-width: 700px) {
+    .container form {
+        padding: 10px 0 0 0;
+    }
+    .container form .form-row{
+        display: block;
+    }
+    form .form-row .input-data{
+        margin: 35px 0!important;
+    }
+    .submit-btn .input-data{
+        width: 40%!important;
+    }
 }
 
 @media (max-width: 540px) {

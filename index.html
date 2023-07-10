@@ -46,6 +46,11 @@
             <div class="underline"></div>
             <label for="base">Sueldo Base</label>
           </div>
+          <div class="input-data">
+            <input type="number" id="hextras" required>
+            <div class="underline"></div>
+            <label for="hextras">Horas extras</label>
+          </div>
         </div>
         <div class="form-row">
           <div class="input-data">
@@ -59,6 +64,23 @@
             </select>
           </div>
         </div>
+        <div class="form-row">
+          <div class="input-data">
+            <input type="number" id="descuentos" required>
+            <div class="underline"></div>
+            <label for="descuentos">Descuentos</label>
+          </div>
+          <div class="input-data">
+            <input type="number" id="movilizacion" required>
+            <div class="underline"></div>
+            <label for="movilizacion">Movilización</label>
+          </div>
+          <div class="input-data">
+            <input type="bool" id="cargafamiliar" required>
+            <div class="underline"></div>
+            <label for="cargafamiliar">Número carga familiar</label>
+          </div>
+        </div>
         <div class="form-row submit-btn">
           <div class="input-data">
             <div class="inner"></div>
@@ -70,7 +92,7 @@
           </div>
           <div class="input-data">
             <div class="inner"></div>
-            <input type="button" onclick="Clean()" value="Enviar">
+            <input type="button" onclick="Clean()" value="Limpiar">
           </div>
           <div class="input-data">
             <div class="inner"></div>
@@ -87,17 +109,24 @@
             <tr>
               <th>Nombre</th>
               <th>Apellido</th>
-              <th>Sueldo Base</th>
-              <th>Dias</th>
-              <th>Sueldo base días trabajados</th>
-              <th>Bonificacion</th>
-              <th>Liquido</th>
+              <th>Dias trabajados</th>
+              <th>Sueldo base</th>
+              <th>Horas extras realizadas</th>
+              <th>Sueldo mes</th>
+              <th>Monto esperado</th>
+              <th>Monto bonificación</th>
+              <th>Monto gratificación</th>
               <th>AFP</th>
-              <th>Porcentaje</th>
-              <th>Bruto</th>
+              <th>Porcentaje AFP</th>
+              <th>Sueldo imponible</th>
               <th>Monto AFP</th>
               <th>Monto Fonasa</th>
               <th>Seguro Cesantía</th>
+              <th>Movilización</th>
+              <th>Carga familiar</th>
+              <th>Descuento</th>
+              <th>Sueldo liquido</th>
+              <th>Costo empleado</th>
               <th>Acciones</th>
             </tr>
           </thead>
