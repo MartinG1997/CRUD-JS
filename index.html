@@ -39,12 +39,12 @@
           <div class="input-data">
             <input type="number" id="dias" required>
             <div class="underline"></div>
-            <label for="dias">Días Trabajados</label>
+            <label for="dias">Días trabajados</label>
           </div>
           <div class="input-data">
             <input type="text" id="base" required>
             <div class="underline"></div>
-            <label for="base">Sueldo Base</label>
+            <label for="base">Sueldo base mes</label>
           </div>
           <div class="input-data">
             <input type="number" id="hextras" required>
@@ -56,7 +56,7 @@
           <div class="input-data">
             <input type="number" id="monto" required>
             <div class="underline"></div>
-            <label for="monto">Monto</label>
+            <label for="monto">Total trato</label>
           </div>
           <div class="input-data">
             <select id="indicadores" required>
@@ -66,19 +66,16 @@
         </div>
         <div class="form-row">
           <div class="input-data">
-            <input type="number" id="descuentos" required>
-            <div class="underline"></div>
-            <label for="descuentos">Descuentos</label>
-          </div>
-          <div class="input-data">
             <input type="number" id="movilizacion" required>
             <div class="underline"></div>
             <label for="movilizacion">Movilización</label>
           </div>
           <div class="input-data">
-            <input type="bool" id="cargafamiliar" required>
-            <div class="underline"></div>
-            <label for="cargafamiliar">Número carga familiar</label>
+            <select id="tipocontrato" required>
+              <option value="">Selecione tipo contrato</option>
+              <option value="0">Faena</option>
+              <option value="0.006">Contrata</option>
+            </select>
           </div>
         </div>
         <div class="form-row submit-btn">
@@ -110,23 +107,23 @@
               <th>Nombre</th>
               <th>Apellido</th>
               <th>Dias trabajados</th>
-              <th>Sueldo base</th>
-              <th>Horas extras realizadas</th>
+              <th>Sueldo base mes</th>
+              <th>Horas extras</th>
               <th>Sueldo mes</th>
-              <th>Monto esperado</th>
-              <th>Monto bonificación</th>
-              <th>Monto gratificación</th>
+              <th>Total trato</th>
+              <th>Bono desempeño</th>
+              <th>Gratificación</th>
               <th>AFP</th>
               <th>Porcentaje AFP</th>
               <th>Sueldo imponible</th>
-              <th>Monto AFP</th>
-              <th>Monto Fonasa</th>
-              <th>Seguro Cesantía</th>
+              <th>Descuento AFP</th>
+              <th>Descuento Fonasa</th>
+              <th>Descuento Cesantía</th>
+              <th>Descuento Cesantía (empleador)</th>
               <th>Movilización</th>
-              <th>Carga familiar</th>
-              <th>Descuento</th>
-              <th>Sueldo liquido</th>
+              <th>Sueldo líquido</th>
               <th>Costo empleado</th>
+              <th>Costo empresa</th>
               <th>Acciones</th>
             </tr>
           </thead>

@@ -1,28 +1,35 @@
 // Función para traer la API de gael.cloud, la cual cotiene los datos de previred actualizados y se trae en forma de JSON.
 $(document).ready(function () {
+    // Objeto para mapear las claves a los nombres deseados
+    var nombresAFP = {
+        AFPCapitalTasaDep: "Capital",
+        AFPCuprumTasaDep: "Cuprum",
+        AFPHabitatTasaDep: "Habitat",
+        AFPPlanVitalTasaDep: "Plan Vital",
+        AFPProVidaTasaDep: "Provida",
+        AFPModeloTasaDep: "Modelo",
+        AFPUnoTasaDep: "Uno"
+    };
+
     $.getJSON(
         "https://api.gael.cloud/general/public/previred/072022",
         function (data) {
-            var indicadores = [
-                "AFPCapitalTasaDep",
-                "AFPCuprumTasaDep",
-                "AFPHabitatTasaDep",
-                "AFPPlanVitalTasaDep",
-                "AFPProVidaTasaDep",
-                "AFPModeloTasaDep",
-                "AFPUnoTasaDep",
-            ];
-            //Recorre data para para armar un select list con value y key
+            var indicadores = Object.keys(nombresAFP);
+
+            // Recorre data para armar un select list con value y key
             $.each(data, function (key, value) {
                 if (indicadores.includes(key)) {
+                    var nombreAFP = nombresAFP[key]; // Obtiene el nombre deseado
+
                     $("#indicadores").append(
-                        "<option value='" + value + "'>" + key + "</option>"
+                        "<option value='" + value + "'>" + nombreAFP + "</option>"
                     );
                 }
             });
         }
     );
 });
+
 
 function SaveData() {
     var id = document.getElementById("Id").value;
@@ -37,36 +44,24 @@ function SaveData() {
     var porcentaje_afp = parseFloat(selectList.value.replace(",", "."));            //Cambia la com del valor por un punto para efectuar operaciones ++
     var sueldo_mes = (sueldo_base/30)*dias_trabajados;                              //Es el sueldo ganado en base a los días trabajados ++
     var bonificacion = (monto_esperado-sueldo_mes);                                 //Es el valor extra para llegar al monto deseado ++
-    var gratificacion;                                                              //La gratificacion ++
-    switch(true){
-        case (monto_esperado*0.4 <= 158333):
-            gratificacion = monto_esperado*0.4;
-            break;
-        case (monto_esperado*0.4 >= 158333):
-            gratificacion = 158333;
-            break;
-    }
+    var gratificacion = Gratificación(monto_esperado);                                                              //La gratificacion ++
     var sueldo_imponible = (sueldo_mes+bonificacion+gratificacion+hextras);                 //Sueldo Imponible ++
     var montoAFP = ((sueldo_imponible * porcentaje_afp) / 100).toFixed(2);                  //Monto AFP ++
     var montoFONASA = (sueldo_imponible * 0.07).toFixed(2);                                 //Monto FONASA ++
-    var montoSeguro = (sueldo_imponible*0.006).toFixed(2);                                  // Monto Seguro ++ (arreglar para que funcione para faena o contrata)
+    var montoSeguro = (sueldo_imponible*document.getElementById("tipocontrato").value).toFixed(2);                                 // Monto Seguro ++ (arreglar para que funcione para faena o contrata)
     var sueldo_liquido_sin_ni = sueldo_imponible - montoAFP - montoFONASA - montoSeguro;    // Sueldo liquido sin no imponibles ++
-    var descuentos = document.getElementById("descuentos").value;                           //Descuentos ++
     var movilizacion = document.getElementById("movilizacion").value;                       //Movilizacion ++
-    var cargafamiliar = document.getElementById("cargafamiliar").value;                     // carga familiar
-    var montocargafamiliar = 0;                                                                 //Monto carga familiar ++
-    switch(true){
-        case (sueldo_liquido_sin_ni <= 429899):
-            montocargafamiliar = cargafamiliar*16828;
+    var costo_empleado = sueldo_liquido_sin_ni + movilizacion;                            //Monto Sueldo total Empleado ++
+    var cesantia = 0;
+    switch(true) {
+        case(document.getElementById("tipocontrato").value == 0):
+            cesantia = sueldo_imponible*0.03;
             break;
-        case (sueldo_liquido_sin_ni > 429899 & sueldo_liquido_sin_ni <= 627913):
-            montocargafamiliar = cargafamiliar*10327;
-            break;
-        case (sueldo_liquido_sin_ni > 627913 & sueldo_liquido_sin_ni <= 979330):
-            montocargafamiliar = cargafamiliar*3264;
+        case(document.getElementById("tipocontrato").value ==  0.006):
+            cesantia = sueldo_imponible*0.024;
             break;
     }
-    var costo_empleado = sueldo_liquido_sin_ni + movilizacion + montocargafamiliar - descuentos; //Monto Sueldo total Empleado ++
+    var costoe = parseInt(costo_empleado)+cesantia;
 
     //Se simplifica codigo, en vez de crear un Update igual al SaveData, se decide eliminar, dado que de la l28 a la 42 eran exactamente iguales
     //Es mejor evaluar si esta o no el Id
@@ -90,11 +85,11 @@ function SaveData() {
             montoFONASA: montoFONASA,
             montoSeguro: montoSeguro,
             sueldo_liquido_sin_ni: sueldo_liquido_sin_ni,
-            descuentos: descuentos,
             movilizacion: movilizacion,
-            cargafamiliar: cargafamiliar,
-            montocargafamiliar: montocargafamiliar,
-            costo_empleado, costo_empleado
+            costo_empleado,
+            cesantia,
+            costoe,
+
         };
         localStorage.setItem("datos", JSON.stringify(datosGuardados));
         document.getElementById("nombre").value = "";
@@ -104,9 +99,7 @@ function SaveData() {
         document.getElementById("monto").value = "";
         document.getElementById("indicadores").value = "";
         document.getElementById("Id").value = "";
-        document.getElementById("descuentos").value = "";
         document.getElementById("movilizacion").value = "";
-        document.getElementById("cargafamiliar").value = "";
 
         LoadData();
         return 0;
@@ -133,11 +126,10 @@ function SaveData() {
             montoFONASA: montoFONASA,
             montoSeguro: montoSeguro,
             sueldo_liquido_sin_ni: sueldo_liquido_sin_ni,
-            descuentos: descuentos,
             movilizacion: movilizacion,
-            cargafamiliar: cargafamiliar,
-            montocargafamiliar: montocargafamiliar,
-            costo_empleado, costo_empleado
+            costo_empleado,
+            cesantia,
+            costoe,
         });
 
         // Guardar el array actualizado en LocalStorage
@@ -151,30 +143,7 @@ function SaveData() {
         document.getElementById("monto").value = "";
         document.getElementById("indicadores").value = "";
         document.getElementById("Id").value = "";
-        document.getElementById("descuentos").value = "";
         document.getElementById("movilizacion").value = "";
-        document.getElementById("cargafamiliar").value = "";
-        console.log(nombre)
-        console.log(apellido)
-        console.log(dias_trabajados)
-        console.log(sueldo_base)
-        console.log(hextras)
-        console.log(monto_esperado)
-        console.log(afp)
-        console.log(porcentaje_afp)
-        console.log(sueldo_mes)
-        console.log(bonificacion)
-        console.log(gratificacion)
-        console.log(sueldo_imponible)
-        console.log(montoAFP)
-        console.log(montoFONASA)
-        console.log(montoSeguro)
-        console.log(sueldo_liquido_sin_ni)
-        console.log(descuentos)
-        console.log(movilizacion)
-        console.log(cargafamiliar)
-        console.log(montocargafamiliar)
-        console.log(costo_empleado)
 
         // Actualizar la tabla
         LoadData();
@@ -182,6 +151,18 @@ function SaveData() {
         alert(
             "Falta asignar valor a uno de los siguientes campos: \n 1. Nombre \n 2. Apellido \n 3. Monto \n 4. Lista de AFPs"
         );
+    }
+}
+
+function Gratificación(monto){
+    var gratificacion = 0;
+    switch(true){
+        case (monto*0.25 <= 158333):
+            gratificacion = monto*0.25;
+            return gratificacion;
+        case (monto*0.25 >= 158333):
+            gratificacion = 158333;
+            return gratificacion;
     }
 }
 
@@ -211,11 +192,11 @@ function LoadData() {
             <td>${Intl.NumberFormat().format( dato.montoAFP )}</td>
             <td>${Intl.NumberFormat().format( dato.montoFONASA )}</td>
             <td>${Intl.NumberFormat().format( dato.montoSeguro )}</td>
+            <td>${Intl.NumberFormat().format( dato.cesantia )}</td>
             <td>${Intl.NumberFormat().format( dato.movilizacion )}</td>
-            <td>${Intl.NumberFormat().format( dato.montocargafamiliar )}</td>
-            <td>${Intl.NumberFormat().format( dato.descuentos )}</td>
             <td>${Intl.NumberFormat().format( dato.sueldo_liquido_sin_ni )}</td>
             <td>${Intl.NumberFormat().format( dato.costo_empleado )}</td>
+            <td>${Intl.NumberFormat().format( dato.costoe )}</td>
             <td>
                 <button onclick="EditData(${index})">Editar</button>
                 <button onclick="DeleteData(${index})">Eliminar</button>
@@ -263,28 +244,49 @@ function descargarExcel() {
         [
             "Nombre",
             "Apellido",
-            "Sueldo Bruto",
+            "Dias trabajados",
+            "Sueldo base mes",
+            "horas extras",
+            "Sueldo mes",
+            "Total trato",
+            "Bono desempeño",
+            "Gratificación",
             "AFP",
             "Porcentaje AFP",
-            "Sueldo Liquido",
-            "Monto AFP",
-            "Monto FONASA",
-            "Seguro de Cesantía",
-            "Sueldo Base"
+            "Sueldo imponible",
+            "Descuento AFP",
+            "Descuento Fonasa",
+            "Descuento cesantía",
+            "Descuento cesantía (Empleador)",
+            "Movilización",
+            "Sueldo líquido",
+            "Costo empleado",
+            "Costo empresa",
+
         ],
     ].concat(
         datosGuardados.map(function (dato) {
             return [
                 dato.nombre,
                 dato.apellido,
+                dato.dias_trabajados,
+                dato.sueldo_base,
+                dato.hextras,
+                dato.sueldo_mes,
                 dato.monto_esperado,
+                dato.bonificacion,
+                dato.gratificacion,
                 dato.afp,
                 dato.porcentaje_afp,
-                dato.montoReal,
+                dato.sueldo_imponible,
                 dato.montoAFP,
                 dato.montoFONASA,
                 dato.montoSeguro,
-                dato.sueldo_base,
+                dato.cesantia,
+                dato.movilizacion,
+                dato.sueldo_liquido_sin_ni,
+                dato.costo_empleado,
+                dato.costoe,
             ];
         })
     );
