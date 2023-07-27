@@ -157,11 +157,11 @@ function SaveData() {
 function Gratificación(monto){
     var gratificacion = 0;
     switch(true){
-        case (monto*0.25 <= 158333):
+        case (monto*0.25 <= 174166):
             gratificacion = monto*0.25;
             return gratificacion;
-        case (monto*0.25 >= 158333):
-            gratificacion = 158333;
+        case (monto*0.25 >= 174166):
+            gratificacion = 174166;
             return gratificacion;
     }
 }
