@@ -38,30 +38,29 @@ function SaveData() {
     var dias_trabajados = document.getElementById("dias").value;                    //Días trabajados ++
     var sueldo_base = document.getElementById("base").value;                        //Es el sueldo base ++
     var hextras = ((sueldo_base/30)*(7/45)*1.5)*document.getElementById("hextras").value;    //Son las HORAS extras trabajadas ++
-    var monto_esperado = document.getElementById("monto").value;                    //Es el monto esperado a llegar antes de la gratificacion y la imponibilidad ++
+    var monto_esperado = document.getElementById("monto").value;                    //Es el sueldo liquido esperado.
     const selectList = document.getElementById("indicadores");
-    var afp = selectList.options[selectList.selectedIndex].textContent;
+    var afp = selectList.options[selectList.selectedIndex].textContent;             //AFP inscrito
     var porcentaje_afp = parseFloat(selectList.value.replace(",", "."));            //Cambia la com del valor por un punto para efectuar operaciones ++
     var sueldo_mes = (sueldo_base/30)*dias_trabajados;                              //Es el sueldo ganado en base a los días trabajados ++
-    var bonificacion = (monto_esperado-sueldo_mes);                                 //Es el valor extra para llegar al monto deseado ++
-    var gratificacion = Gratificación(monto_esperado);                                                              //La gratificacion ++
-    var sueldo_imponible = (sueldo_mes+bonificacion+gratificacion+hextras);                 //Sueldo Imponible ++
-    var montoAFP = ((sueldo_imponible * porcentaje_afp) / 100).toFixed(2);                  //Monto AFP ++
-    var montoFONASA = (sueldo_imponible * 0.07).toFixed(2);                                 //Monto FONASA ++
-    var montoSeguro = (sueldo_imponible*document.getElementById("tipocontrato").value).toFixed(2);                                 // Monto Seguro ++ (arreglar para que funcione para faena o contrata)
-    var sueldo_liquido_sin_ni = sueldo_imponible - montoAFP - montoFONASA - montoSeguro;    // Sueldo liquido sin no imponibles ++
+    var porcentaje_cesantia = document.getElementById("tipocontrato").value;
     var movilizacion = document.getElementById("movilizacion").value;                       //Movilizacion ++
-    var costo_empleado = sueldo_liquido_sin_ni + movilizacion;                            //Monto Sueldo total Empleado ++
+    var sueldo_bruto = ((monto_esperado - movilizacion)*100)/(100-(porcentaje_cesantia*100)-porcentaje_afp-0.07);  // Sueldo Bruto
+    var gratificacion = Gratificación(sueldo_bruto);                                                              //La gratificacion ++
+    var bonificacion = (sueldo_bruto-gratificacion-sueldo_mes-hextras);                                 //Es el valor extra para llegar al monto deseado ++
+    var montoAFP = ((sueldo_bruto * porcentaje_afp) / 100).toFixed(2);                  //Monto AFP ++
+    var montoFONASA = (sueldo_bruto * 0.07).toFixed(2);                                 //Monto FONASA ++
+    var montoSeguro = (sueldo_bruto*document.getElementById("tipocontrato").value).toFixed(2);                                 // Monto Seguro ++ (arreglar para que funcione para faena o contrata)
     var cesantia = 0;
     switch(true) {
         case(document.getElementById("tipocontrato").value == 0):
-            cesantia = sueldo_imponible*0.03;
+            cesantia = sueldo_bruto*0.03;
             break;
         case(document.getElementById("tipocontrato").value ==  0.006):
-            cesantia = sueldo_imponible*0.024;
+            cesantia = sueldo_bruto*0.024;
             break;
     }
-    var costoe = parseInt(costo_empleado)+cesantia;
+    //var costoe = parseInt(costo_empleado)+cesantia;
 
     //Se simplifica codigo, en vez de crear un Update igual al SaveData, se decide eliminar, dado que de la l28 a la 42 eran exactamente iguales
     //Es mejor evaluar si esta o no el Id
@@ -69,26 +68,23 @@ function SaveData() {
     {
         var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
         datosGuardados[id] = {
-            nombre: nombre,
-            apellido: apellido,
-            dias_trabajados: dias_trabajados,
-            sueldo_base: sueldo_base,
-            hextras: hextras,
-            monto_esperado: monto_esperado,
-            afp: afp,
-            porcentaje_afp: porcentaje_afp,
-            sueldo_mes: sueldo_mes,
-            bonificacion: bonificacion,
-            gratificacion: gratificacion,
-            sueldo_imponible: sueldo_imponible,
-            montoAFP: montoAFP,
-            montoFONASA: montoFONASA,
-            montoSeguro: montoSeguro,
-            sueldo_liquido_sin_ni: sueldo_liquido_sin_ni,
-            movilizacion: movilizacion,
-            costo_empleado,
+            nombre,
+            apellido,
+            dias_trabajados,
+            sueldo_base,
+            hextras,
+            monto_esperado,
+            afp,
+            porcentaje_afp,
+            sueldo_mes,
+            sueldo_bruto,
+            bonificacion,
+            gratificacion,
+            montoAFP,
+            montoFONASA,
+            montoSeguro,
+            movilizacion,
             cesantia,
-            costoe,
 
         };
         localStorage.setItem("datos", JSON.stringify(datosGuardados));
@@ -110,26 +106,23 @@ function SaveData() {
         var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
         // Agregar el nuevo dato al array
         datosGuardados.push({
-            nombre: nombre,
-            apellido: apellido,
-            dias_trabajados: dias_trabajados,
-            sueldo_base: sueldo_base,
-            hextras: hextras,
-            monto_esperado: monto_esperado,
-            afp: afp,
-            porcentaje_afp: porcentaje_afp,
-            sueldo_mes: sueldo_mes,
-            bonificacion: bonificacion,
-            gratificacion: gratificacion,
-            sueldo_imponible: sueldo_imponible,
-            montoAFP: montoAFP,
-            montoFONASA: montoFONASA,
-            montoSeguro: montoSeguro,
-            sueldo_liquido_sin_ni: sueldo_liquido_sin_ni,
-            movilizacion: movilizacion,
-            costo_empleado,
+            nombre,
+            apellido,
+            dias_trabajados,
+            sueldo_base,
+            hextras,
+            monto_esperado,
+            afp,
+            porcentaje_afp,
+            sueldo_mes,
+            sueldo_bruto,
+            bonificacion,
+            gratificacion,
+            montoAFP,
+            montoFONASA,
+            montoSeguro,
+            movilizacion,
             cesantia,
-            costoe,
         });
 
         // Guardar el array actualizado en LocalStorage
@@ -157,10 +150,10 @@ function SaveData() {
 function Gratificación(monto){
     var gratificacion = 0;
     switch(true){
-        case (monto*0.25 <= 174166):
-            gratificacion = monto*0.25;
+        case (monto <= 870830):
+            gratificacion = monto-((monto*100)/125);
             return gratificacion;
-        case (monto*0.25 >= 174166):
+        case (monto > 870830):
             gratificacion = 174166;
             return gratificacion;
     }
@@ -183,20 +176,17 @@ function LoadData() {
             <td>${Intl.NumberFormat().format( dato.sueldo_base )}</td>
             <td>${Intl.NumberFormat().format( dato.hextras )}</td>
             <td>${Intl.NumberFormat().format( dato.sueldo_mes )}</td>
-            <td>${Intl.NumberFormat().format( dato.monto_esperado )}</td>
+            <td>${Intl.NumberFormat().format( (dato.sueldo_mes+dato.hextras+dato.bonificacion-dato.gratificacion) )}</td>
             <td>${Intl.NumberFormat().format( dato.bonificacion )}</td>
             <td>${Intl.NumberFormat().format( dato.gratificacion )}</td>
             <td>${dato.afp}</td>
             <td>${dato.porcentaje_afp}</td>
-            <td>${Intl.NumberFormat().format( dato.sueldo_imponible )}</td>
+            <td>${Intl.NumberFormat().format( dato.monto_esperado )}</td>
             <td>${Intl.NumberFormat().format( dato.montoAFP )}</td>
             <td>${Intl.NumberFormat().format( dato.montoFONASA )}</td>
             <td>${Intl.NumberFormat().format( dato.montoSeguro )}</td>
             <td>${Intl.NumberFormat().format( dato.cesantia )}</td>
             <td>${Intl.NumberFormat().format( dato.movilizacion )}</td>
-            <td>${Intl.NumberFormat().format( dato.sueldo_liquido_sin_ni )}</td>
-            <td>${Intl.NumberFormat().format( dato.costo_empleado )}</td>
-            <td>${Intl.NumberFormat().format( dato.costoe )}</td>
             <td>
                 <button onclick="EditData(${index})">Editar</button>
                 <button onclick="DeleteData(${index})">Eliminar</button>
@@ -248,7 +238,7 @@ function descargarExcel() {
             "Sueldo base mes",
             "horas extras",
             "Sueldo mes",
-            "Total trato",
+            "Bono+hextras+sueldo",
             "Bono desempeño",
             "Gratificación",
             "AFP",
@@ -259,9 +249,6 @@ function descargarExcel() {
             "Descuento cesantía",
             "Descuento cesantía (Empleador)",
             "Movilización",
-            "Sueldo líquido",
-            "Costo empleado",
-            "Costo empresa",
 
         ],
     ].concat(
@@ -273,7 +260,7 @@ function descargarExcel() {
                 dato.sueldo_base,
                 dato.hextras,
                 dato.sueldo_mes,
-                dato.monto_esperado,
+                (dato.sueldo_mes+dato.hextras+dato.bonificacion-dato.gratificacion),
                 dato.bonificacion,
                 dato.gratificacion,
                 dato.afp,
@@ -284,9 +271,6 @@ function descargarExcel() {
                 dato.montoSeguro,
                 dato.cesantia,
                 dato.movilizacion,
-                dato.sueldo_liquido_sin_ni,
-                dato.costo_empleado,
-                dato.costoe,
             ];
         })
     );
