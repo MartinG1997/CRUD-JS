@@ -176,17 +176,18 @@ function LoadData() {
             <td>${Intl.NumberFormat().format( dato.sueldo_base )}</td>
             <td>${Intl.NumberFormat().format( dato.hextras )}</td>
             <td>${Intl.NumberFormat().format( dato.sueldo_mes )}</td>
-            <td>${Intl.NumberFormat().format( (dato.sueldo_mes+dato.hextras+dato.bonificacion-dato.gratificacion) )}</td>
             <td>${Intl.NumberFormat().format( dato.bonificacion )}</td>
+            <td>${Intl.NumberFormat().format( dato.sueldo_mes+dato.hextras+dato.bonificacion )}</td>
             <td>${Intl.NumberFormat().format( dato.gratificacion )}</td>
+            <td>${Intl.NumberFormat().format( dato.sueldo_bruto )}</td>
             <td>${dato.afp}</td>
             <td>${dato.porcentaje_afp}</td>
-            <td>${Intl.NumberFormat().format( dato.monto_esperado )}</td>
             <td>${Intl.NumberFormat().format( dato.montoAFP )}</td>
             <td>${Intl.NumberFormat().format( dato.montoFONASA )}</td>
             <td>${Intl.NumberFormat().format( dato.montoSeguro )}</td>
             <td>${Intl.NumberFormat().format( dato.cesantia )}</td>
             <td>${Intl.NumberFormat().format( dato.movilizacion )}</td>
+            <td>${Intl.NumberFormat().format( dato.monto_esperado )}</td>
             <td>
                 <button onclick="EditData(${index})">Editar</button>
                 <button onclick="DeleteData(${index})">Eliminar</button>
