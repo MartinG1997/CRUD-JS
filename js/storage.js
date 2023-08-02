@@ -45,7 +45,7 @@ function SaveData() {
     var sueldo_mes = (sueldo_base/30)*dias_trabajados;                              //Es el sueldo ganado en base a los días trabajados ++
     var porcentaje_cesantia = document.getElementById("tipocontrato").value;
     var movilizacion = document.getElementById("movilizacion").value;                       //Movilizacion ++
-    var sueldo_bruto = ((monto_esperado - movilizacion)*100)/(100-(porcentaje_cesantia*100)-porcentaje_afp-0.07);  // Sueldo Bruto
+    var sueldo_bruto = ((monto_esperado - movilizacion)*100)/(100-7-porcentaje_afp-(porcentaje_cesantia*100));  // Sueldo Bruto -(porcentaje_cesantia*100)
     var gratificacion = Gratificación(sueldo_bruto);                                                              //La gratificacion ++
     var bonificacion = (sueldo_bruto-gratificacion-sueldo_mes-hextras);                                 //Es el valor extra para llegar al monto deseado ++
     var montoAFP = ((sueldo_bruto * porcentaje_afp) / 100).toFixed(2);                  //Monto AFP ++
