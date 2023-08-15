@@ -53,6 +53,10 @@ function SaveData() {
     var montoSeguro = (sueldo_bruto*document.getElementById("tipocontrato").value).toFixed(2);                                 // Monto Seguro ++ (arreglar para que funcione para faena o contrata)
     var cesantia = 0;
     switch(true) {
+
+        case(document.getElementById("tipocontrato").options[document.getElementById("tipocontrato").selectedIndex].textContent == 'No aplica'):
+            cesantia= 0;
+            break;
         case(document.getElementById("tipocontrato").value == 0):
             cesantia = sueldo_bruto*0.03;
             break;
@@ -206,7 +210,12 @@ function EditData(index) {
     if (dato) {
         document.getElementById("nombre").value = dato.nombre;
         document.getElementById("apellido").value = dato.apellido;
+        document.getElementById("dias").value = dato.dias_trabajados;
+        document.getElementById("base").value = dato.sueldo_base;
+        document.getElementById("hextras").value = dato.hextras
         document.getElementById("monto").value = dato.monto_esperado;
+        //document.getElementById("indicadores").textContent = dato.afp;
+        document.getElementById("movilizacion").value = dato.movilizacion;
     }
     document.getElementById("Id").value = index;
 }
