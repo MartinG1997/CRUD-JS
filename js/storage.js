@@ -1,15 +1,16 @@
+var nombresAFP = {
+    AFPCapitalTasaDep: "Capital",
+    AFPCuprumTasaDep: "Cuprum",
+    AFPHabitatTasaDep: "Habitat",
+    AFPPlanVitalTasaDep: "Plan Vital",
+    AFPProVidaTasaDep: "Provida",
+    AFPModeloTasaDep: "Modelo",
+    AFPUnoTasaDep: "Uno"
+};
+
 // Función para traer la API de gael.cloud, la cual cotiene los datos de previred actualizados y se trae en forma de JSON.
 $(document).ready(function () {
     // Objeto para mapear las claves a los nombres deseados
-    var nombresAFP = {
-        AFPCapitalTasaDep: "Capital",
-        AFPCuprumTasaDep: "Cuprum",
-        AFPHabitatTasaDep: "Habitat",
-        AFPPlanVitalTasaDep: "Plan Vital",
-        AFPProVidaTasaDep: "Provida",
-        AFPModeloTasaDep: "Modelo",
-        AFPUnoTasaDep: "Uno"
-    };
 
     $.getJSON(
         "https://api.gael.cloud/general/public/previred/072022",
@@ -232,80 +233,79 @@ function Clean() {
     LoadData();
 }
 
-function descargarExcel() {
-    var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
+async function Insert(nombre, apellido, dias_trabajados, sueldo_base, hextra, total_trato, movilizacion, tipo_contrato, afp) {
+    var porcentaje_afp;
+    for (let clave in nombresAFP) {
+        if (nombresAFP.hasOwnProperty(clave) && nombresAFP[clave] === afp) {
+            try {
+                const response = await fetch("https://api.gael.cloud/general/public/previred/072022");
+                const data = await response.json();
+                porcentaje_afp =parseFloat(data[clave].replace(",", "."));
+            } catch (error) {
+                console.log("Error al obtener los datos de la API:", error);
+            }
+            hextras = ((sueldo_base/30)*(7/45)*1.5)*hextra;
+            sueldo_mes = (sueldo_base/30)*dias_trabajados;
+            switch(tipo_contrato)
+            {
+                case 'Obra':
+                    porcentaje_cesantia = 0;
+                    break;
+                case 'Indefinido':
+                    porcentaje_cesantia = 0.006;
+                    break;
+                case 'No aplica':
+                    porcentaje_cesantia = 0;
+                    break;
+            }
+            var monto_esperado = total_trato;
+            var sueldo_bruto = ((total_trato - movilizacion)*100)/(100-7-porcentaje_afp-(porcentaje_cesantia*100));
+            var gratificacion = Gratificación(sueldo_bruto);
+            var bonificacion = (sueldo_bruto-gratificacion-sueldo_mes-hextras);
+            var montoAFP = ((sueldo_bruto * porcentaje_afp) / 100).toFixed(2);
+            var montoFONASA = (sueldo_bruto * 0.07).toFixed(2);
+            var montoSeguro = (sueldo_bruto*porcentaje_cesantia).toFixed(2);
+            var cesantia = 0;
+            switch(tipo_contrato) {
 
-    if (datosGuardados.length === 0) {
-        alert("No hay datos guardados para descargar.");
-        return;
-    }
-
-    var datos = [
-        [
-            "Nombre",
-            "Apellido",
-            "Dias trabajados",
-            "Sueldo base mes",
-            "horas extras",
-            "Sueldo mes",
-            "Bono+hextras+sueldo",
-            "Bono desempeño",
-            "Gratificación",
-            "AFP",
-            "Porcentaje AFP",
-            "Sueldo imponible",
-            "Descuento AFP",
-            "Descuento Fonasa",
-            "Descuento cesantía",
-            "Descuento cesantía (Empleador)",
-            "Movilización",
-
-        ],
-    ].concat(
-        datosGuardados.map(function (dato) {
-            return [
-                dato.nombre,
-                dato.apellido,
-                dato.dias_trabajados,
-                dato.sueldo_base,
-                dato.hextras,
-                dato.sueldo_mes,
-                (dato.sueldo_mes+dato.hextras+dato.bonificacion-dato.gratificacion),
-                dato.bonificacion,
-                dato.gratificacion,
-                dato.afp,
-                dato.porcentaje_afp,
-                dato.sueldo_imponible,
-                dato.montoAFP,
-                dato.montoFONASA,
-                dato.montoSeguro,
-                dato.cesantia,
-                dato.movilizacion,
-            ];
-        })
-    );
-
-    var workbook = XLSX.utils.book_new();
-    var worksheet = XLSX.utils.aoa_to_sheet(datos);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
-
-    var libroBinario = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
-
-    function s2ab(s) {
-        var buf = new ArrayBuffer(s.length);
-        var view = new Uint8Array(buf);
-        for (var i = 0; i < s.length; i++) {
-            view[i] = s.charCodeAt(i) & 0xff;
+                case 'No aplica':
+                    cesantia= 0;
+                break;
+                case 'Obra':
+                    cesantia = sueldo_bruto*0.03;
+                    break;
+                case 'Indefinido':
+                    cesantia = sueldo_bruto*0.024;
+                break;
+            }
+            if (nombre != "" && apellido != "") {
+                // Obtener los datos existentes en LocalStorage
+                var datosGuardados = JSON.parse(localStorage.getItem("datos")) || [];
+                // Agregar el nuevo dato al array
+                datosGuardados.push({
+                    nombre,
+                    apellido,
+                    dias_trabajados,
+                    sueldo_base,
+                    hextras,
+                    monto_esperado,
+                    afp,
+                    porcentaje_afp,
+                    sueldo_mes,
+                    sueldo_bruto,
+                    bonificacion,
+                    gratificacion,
+                    montoAFP,
+                    montoFONASA,
+                    montoSeguro,
+                    movilizacion,
+                    cesantia,
+                });
+        
+                // Guardar el array actualizado en LocalStorage
+                localStorage.setItem("datos", JSON.stringify(datosGuardados));
+            }
         }
-        return buf;
     }
-
-    var archivoExcel = new Blob([s2ab(libroBinario)], {
-        type: "application/octet-stream",
-    });
-
-    var enlaceDescarga = document.createElement("a");
-    enlaceDescarga.href = URL.createObjectURL(archivoExcel);
-    enlaceDescarga.download = "datos.xlsx";
-    enlaceDescarga.click();
+    //console.log("El valor porcentual es: " + porcentajeAFP);
 }

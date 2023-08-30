@@ -100,6 +100,10 @@
         </div>
       </form>
     </section>
+    <section class="container">
+      <h2>Carga masiva</h2>
+      <input type="file" onchange="leerArchivoExcel()" id="CargaMasiva" accept=".xlsx">
+    </section>
 
     <section>
       <div class="table-container">
@@ -133,6 +137,8 @@
     </section>
 
     <script src="js/storage.js"></script>
+    <script src="js/CargaMasiva.js"></script>
+    <script src="js/DownloadExcel.js"></script>
     <script src="js/xlsx.full.min.js"></script>
   </body>
 </html>
