@@ -244,7 +244,7 @@ async function Insert(nombre, apellido, dias_trabajados, sueldo_base, hextra, to
             } catch (error) {
                 console.log("Error al obtener los datos de la API:", error);
             }
-            hextras = ((sueldo_base/30)*(7/45)*1.5)*hextra;
+            hextras = ((sueldo_base/30)*(7/45)*1.5)*parseFloat(hextra);
             sueldo_mes = (sueldo_base/30)*dias_trabajados;
             switch(tipo_contrato)
             {
