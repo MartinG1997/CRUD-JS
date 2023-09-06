@@ -24,17 +24,19 @@ function leerArchivoExcel()
                 apellidos = datos[i].Apellidos;
                 dias_trabajados = datos[i].Dias_trabajados;
                 sueldo_base = datos[i].Sueldo_Base;
+                //hextra = datos[i].Horas_Extras;
                 if(datos[i].Horas_Extras = '')
                 {
-                    hextras = 0;
+                    hextra = 0;
+                    console.log(hextra)
                 }
                 else{
-                    hextras = datos[i].Horas_Extras;
+                    hextra = datos[i].Horas_Extras;
                 }
                 total_trato = datos[i].Total_Trato;
                 movilizacion = datos[i].Movilizacion;
                 tipo_contrato = datos[i].Tipo_Contrato;
-                Insert(nombre, apellidos, dias_trabajados, sueldo_base, hextras, total_trato, movilizacion, tipo_contrato, valorAFP);
+                Insert(nombre, apellidos, dias_trabajados, sueldo_base, hextra, total_trato, movilizacion, tipo_contrato, valorAFP);
             }
             //console.log(primeraColumna);
         }

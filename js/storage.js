@@ -244,7 +244,8 @@ async function Insert(nombre, apellido, dias_trabajados, sueldo_base, hextra, to
             } catch (error) {
                 console.log("Error al obtener los datos de la API:", error);
             }
-            hextras = ((sueldo_base/30)*(7/45)*1.5)*parseFloat(hextra);
+            console.log("las hextras son: "+ hextra + " el sueldo base es: "+ sueldo_base)
+            hextras = ((sueldo_base/30)*(7/45)*1.5)*hextra;
             sueldo_mes = (sueldo_base/30)*dias_trabajados;
             switch(tipo_contrato)
             {
@@ -261,7 +262,7 @@ async function Insert(nombre, apellido, dias_trabajados, sueldo_base, hextra, to
             var monto_esperado = total_trato;
             var sueldo_bruto = ((total_trato - movilizacion)*100)/(100-7-porcentaje_afp-(porcentaje_cesantia*100));
             var gratificacion = Gratificación(sueldo_bruto);
-            var bonificacion = (sueldo_bruto-gratificacion-sueldo_mes-hextras);
+            var bonificacion = parseInt((sueldo_bruto-gratificacion-sueldo_mes-hextras));
             var montoAFP = ((sueldo_bruto * porcentaje_afp) / 100).toFixed(2);
             var montoFONASA = (sueldo_bruto * 0.07).toFixed(2);
             var montoSeguro = (sueldo_bruto*porcentaje_cesantia).toFixed(2);
